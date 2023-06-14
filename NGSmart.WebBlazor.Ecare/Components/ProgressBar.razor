@@ -1,0 +1,50 @@
+<div class="Progress-bar-container">
+    <div class="DisplayText">@DisplayText</div>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: @DisplayValuePercent%;
+            background-color:@DisplayColor; border-radius:20px;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            @DisplayValuePercent%
+        </div>
+    </div>
+</div>
+
+<style>
+    .Progress-bar-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .progress {
+        border-radius: 20px;
+        margin-top: 15px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public double? DisplayValue { get; set; }
+    [Parameter]
+    public string DisplayText { get; set; }
+    [Parameter]
+    public int DisplayValuePercent { get; set; }
+
+    public string DisplayColor = "grey";
+
+    protected override void OnInitialized()
+    {
+        if (DisplayValuePercent < 0)
+        {
+            DisplayValuePercent = 0;
+        }
+        if (DisplayValuePercent < 20)
+        {
+            DisplayColor = "orange";
+        }
+        else
+        {
+            DisplayColor = "green";
+        }
+    }
+}

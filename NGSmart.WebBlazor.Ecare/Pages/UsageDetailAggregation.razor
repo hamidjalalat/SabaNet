@@ -1,0 +1,117 @@
+﻿@page "/UsageDetailAggregation"
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+
+@inject Services.AccountLogTopUsageService AccountLogTopUsageService
+
+<PageTitle>UsageDetailAggregation</PageTitle>
+
+@if (ListAccountLogTopUsage == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>ریز مصرف</h2>
+    <hr />
+    <div style="margin-bottom:2px" class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-3">
+                    <label>از تاریخ</label>
+                    <input @bind="StartDate" type="text" />
+                </div>
+                <div class="col-3">
+                    <label>تا تاریخ</label>
+                    <input @bind="EndDate" type="text" />
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-2">
+                            <button class="btn btn-primary btn-sm" @onclick="()=>GetAccountLogTopUsage()" style="">جستجو</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-bordered table-condensed table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th scope="col">ردیف</th>
+                        <th scope="col">از تاریخ</th>
+                        <th scope="col">تا تاریخ</th>
+                        <th scope="col">جمع مصرف(MB)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ListTotalUsage)
+                    {
+                        <tr>
+                            <th scope="row">@(Index++)</th>
+                            <td>@item.PersianStartDateTime</td>
+                            <td>@item.PersianEndDateTime</td>
+                            <td>@item.UsageMB</td>
+                        </tr>
+                        TotalUsage = TotalUsage + item.UsageMB;
+                    }
+                    <tr>
+                        <td colspan="3">جمع</td>
+                        <td style="background-color:darkgrey">@TotalUsage</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+    <Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code {
+    public GetLogByAccountIdResponse ListAccountLogTopUsage;
+    public List<TotalUsage> ListTotalUsage = new List<TotalUsage>();
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+    public string BusinessDomainID = "27";
+    public string AccountId = "363271";
+    public string StartDate = DateTime.Now.Date.AddDays(-7).ToString();
+    public string EndDate = DateTime.Now.ToString();
+    public string ISGS_AAAServiceId = "0";
+    public string ServiceType = "";
+    private int Index;
+
+    public decimal TotalUsage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ListAccountLogTopUsage = await AccountLogTopUsageService.GetAsyncAccountLogTopUsageId(AccountId, StartDate, EndDate, ISGS_AAAServiceId, ServiceType);
+            ListTotalUsage = ListAccountLogTopUsage.lstTotalUsage.OrderBy(C => C.EndDateTime).ToList();
+
+            Index = 1;
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+
+    public async Task GetAccountLogTopUsage()
+    {
+        ListAccountLogTopUsage = await AccountLogTopUsageService.GetAsyncAccountLogTopUsageId(AccountId, StartDate, EndDate, ISGS_AAAServiceId, ServiceType);
+        ListTotalUsage = ListAccountLogTopUsage.lstTotalUsage.OrderBy(C => C.EndDateTime).ToList();
+    }
+
+    protected override bool ShouldRender()
+    {
+        TotalUsage = 0;
+        Index = 1;
+
+        return base.ShouldRender();
+    }
+}
+

@@ -1,0 +1,306 @@
+﻿@using NGSmart.WebBlazor.Ecare.Models;
+@inject Services.IpStaticService IPStaticService
+@inject Services.UserOnlineInfoService UserOnlineInfoService
+@inject Services.FreeNightService FreeNightService
+@inject Services.GetAccountFairPolicyService GetAccountFairPolicyService
+@inject Services.GetCurrentServiceInfoService GetCurrentServiceInfoService
+
+<div class="dropdown-menu dropdown-menu-big dropdown-menu-right show" x-placement="top-start" style="width:300px; position: absolute; padding:inherit; top: 0; left: 0px;">
+    <div class="columns color-gray component-container">
+        <div class="columns component-top-bar" style="background-image: url(/menu-header-bg.jpg);">
+            <div class="d-flex flex-column flex-center bgi-no-repeat rounded-top">
+                <h3 class="text-white fw-semibold mb-3 text-center align-center" style="font-size:20px; cursor:context-menu">اطلاعات سرویس</h3>
+            </div>
+        </div>
+        <div class="columns component-body">
+            <div class="rows bottom-border ">
+                @if(OnlineIp != string.Empty)
+                {
+                    Connection = true;
+                }
+                else
+                {
+                    Connection = false;
+                }
+                @if (Connection == true)
+                {
+                    Color = "color-blue";
+                }
+                else if (Connection == false)
+                {
+                    Color = string.Empty;
+                }
+                <div style="cursor:help" title="آی پی آنلاین: @OnlineIp" class="row-item left-border d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <i class="fas fa-satellite-dish activesrv" style="font-size: 40px"></i>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">اتصال</span>
+                    @if (Connection == true)
+                    {
+                        <span class="fs-7 text-gray-400 text-center">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="fs-7 text-gray-400 text-center">غیر فعال</span>
+                    }
+
+                </div>
+                @if (Limit == true)
+                {
+                    Color = "color-blue";
+                }
+                else if (Limit == false)
+                {
+                    Color = string.Empty;
+                }
+                <div style="cursor:context-menu" class="row-item d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <i class="fas fa-exclamation diactivesrv" style="font-size: 40px"></i>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">محدودیت</span>
+                    @if (Limit == true)
+                    {
+                        <span class="fs-7 text-gray-400 text-center">دارد</span>
+                    }
+                    else
+                    {
+                        <span class="fs-7 text-gray-400 text-center">ندارد</span>
+                    }
+                </div>
+            </div>
+            <div class="rows bottom-border ">
+                @if (Night == true)
+                {
+                    Color = "color-blue";
+                }
+                else if (Night == false)
+                {
+                    Color = string.Empty;
+                }
+                @if(FreeNightStartTime != string.Empty && FreeNightEndTime != string.Empty && FreeNightPercent != string.Empty)
+                {
+                    FreeNightInfo = $"تاریخ شروع: {FreeNightStartTime}\nتاریخ پایان: {FreeNightEndTime}\nدرصد رایگان شباهنگ: {FreeNightPercent}\nبازه قابل استفاده: {FreeNightPeriod}";
+                }
+                else
+                {
+                    FreeNightInfo = string.Empty;
+                }
+                <div style="cursor:help" title="@FreeNightInfo" class="row-item left-border d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <i class="fa fa-moon" style="font-size: 40px"></i>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">شباهنگ</span>
+                    @if (Night == true)
+                    {
+                        <span class="fs-7 text-gray-400 text-center">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="fs-7 text-gray-400 text-center">غیرفعال</span>
+                    }
+                </div>
+                @if (IpStartTime != string.Empty && IpEndTime != string.Empty)
+                {
+                    IpInfo = $"تاریخ شروع: {IpStartTime}\nتاریخ پایان: {IpEndTime}";
+                }
+                else
+                {
+                    IpInfo = string.Empty;
+                }
+                @if(IpStatic != string.Empty)
+                {
+                    Ip = true;
+                }
+                else
+                {
+                    Ip = false;
+                }
+                @if(Ip == true)
+                {
+                    Color = "color-blue";
+                }
+                else
+                {
+                    IpStatic = "-";
+                    Color = string.Empty;
+                }
+                <div style="cursor:help" title="@IpInfo" class="row-item d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <div class="activesrv" style="font-size: 40px; font-weight: bold; vertical-align: baseline; line-height: 52px">IP</div>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">IP استاتیک</span>
+                    <span class="fs-7 text-gray-400 text-center">@IpStatic</span>
+                </div>
+            </div>
+            <div class="rows">
+                @if (ServiceStatusString != null)
+                {
+                    ServiceStatus = true;
+                }
+                else
+                {
+                    ServiceStatus = false;
+                }
+                @if (ServiceStatus == true)
+                {
+                    Color = "color-blue";
+                }
+                else if (ServiceStatus == false)
+                {
+                    Color = string.Empty;
+                }
+                <div style="cursor:context-menu" class="row-item left-border d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <i class="fas fa-power-off activesrv" style="font-size: 40px"></i>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">سرویس</span>
+                    @if (ServiceStatus == true)
+                    {
+                        <span class="fs-7 text-gray-400 text-center">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="fs-7 text-gray-400 text-center">غیر فعال</span>
+                    }
+                </div>
+                @if (Turbo == true)
+                {
+                    Color = "color-blue";
+                }
+                else if (Turbo == false)
+                {
+                    Color = string.Empty;
+                }
+                <div style="cursor:context-menu" class="row-item d-flex flex-column flex-center h-100 p-6 bg-hover-light @Color">
+                    <div class="symbol symbol-35px symbol-circle text-center icon-height">
+                        <i class="fas fa-tachometer diactivesrv" style="font-size: 38px"></i>
+                    </div>
+                    <span class="fs-5 fw-semibold text-gray-800 mb-0 text-center">توربو شارژ</span>
+                    @if (Turbo == true)
+                    {
+                        <span class="fs-7 text-gray-400 text-center">دارد</span>
+                    }
+                    else
+                    {
+                        <span class="fs-7 text-gray-400 text-center">ندارد</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .component-container {
+        border-radius: 5px;
+    }
+
+    .component-top-bar {
+        height: 100px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .component-body {
+        margin-top: 15px;
+    }
+
+    .columns {
+        margin-top: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .rows {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .row-item {
+        height: 110px;
+        width: 49%;
+        padding: 10px;
+    }
+
+    .left-border {
+        border-left: 1px solid #EFF2F5;
+    }
+
+    .bottom-border {
+        border-bottom: 1px solid #EFF2F5;
+    }
+
+    .color-gray {
+        color: #A1A5B7;
+    }
+
+    .color-blue {
+        color: #009EF7;
+    }
+
+    .icon-height {
+        height: 52px;
+    }
+
+    .align-center {
+        margin-top: 30px;
+    }
+</style>
+
+@code {
+
+    [Parameter]
+    public string AccountID { get; set; }
+
+    public bool Connection = false;
+    public bool Limit = false;
+    public bool Night = false;
+    public string IpStatic = string.Empty;
+    public bool ServiceStatus = false;
+    public bool Turbo = false;
+    public string OnlineIp = string.Empty;
+    public string IpStartTime = string.Empty;
+    public string IpEndTime = string.Empty;
+    public string FreeNightPercent = string.Empty;
+    public string FreeNightStartTime = string.Empty;
+    public string FreeNightEndTime = string.Empty;
+    public string FreeNightPeriod = string.Empty;
+    public string ServiceStatusString;
+
+    public string Color = string.Empty;
+    public string IpInfo = string.Empty;
+    public bool Ip = false;
+    public string FreeNightInfo = string.Empty;
+
+    public IpByAccountIdResponse IpByAccountIdResponse = new IpByAccountIdResponse();
+    public UserOnlineInfoResponse _UserOnlineInfoResponse = new UserOnlineInfoResponse();
+    public FreeNightResponse _FreeNightResponse = new FreeNightResponse();
+    public GetAccountFairPolicyResponse _GetAccountFairPolicyResponse = new GetAccountFairPolicyResponse();
+    public GetCurrentServiceInfoResponse _GetCurrentServiceInfoResponse = new GetCurrentServiceInfoResponse();
+
+    public async Task GetTask()
+    {
+        IpByAccountIdResponse = await IPStaticService.GetAsyncByAccountId(AccountID);
+        _UserOnlineInfoResponse = await UserOnlineInfoService.GetAsyncByAccountId(AccountID);
+        _FreeNightResponse = await FreeNightService.GetAsyncByAccountId(AccountID);
+        _GetAccountFairPolicyResponse = await GetAccountFairPolicyService.GetAsyncByAccountId(AccountID);
+        _GetCurrentServiceInfoResponse = await GetCurrentServiceInfoService.GetAsyncByAccountId(AccountID);
+
+        IpStatic = IpByAccountIdResponse.iPStatic;
+        OnlineIp = _UserOnlineInfoResponse.ipaddress;
+        IpStartTime = IpByAccountIdResponse.iPShamsiStartDateWithName;
+        IpEndTime = IpByAccountIdResponse.iPShamsiEndDateWithName;
+        Night = _FreeNightResponse.hasfreeNight;
+        FreeNightPercent = _FreeNightResponse.freeNightPercentText;
+        FreeNightStartTime = _FreeNightResponse.fromDateShamsiWithName;
+        FreeNightEndTime = _FreeNightResponse.toDateShamsiWithName;
+        FreeNightPeriod = _FreeNightResponse.freeNightPeriod;
+        Limit = _GetAccountFairPolicyResponse.hasFairPolicy;
+        ServiceStatusString = _GetCurrentServiceInfoResponse.serviceName;
+        StateHasChanged();
+    }
+}

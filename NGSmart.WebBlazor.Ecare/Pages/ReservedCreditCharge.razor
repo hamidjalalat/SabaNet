@@ -1,0 +1,44 @@
+﻿@page "/ReservedCreditCharge"
+@using NGSmart.WebBlazor.Ecare.Models;
+@inject Services.ReservedCreditChargeService ReservedCreditChargeService
+
+<div class="row">
+    <div style="font-size:11px" class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover ">
+            <thead>
+                <tr style="font-size:12px">
+                    <th scope="col">ردیف</th>
+                    <th scope="col">نوع سرویس</th>
+                    <th scope="col">تاریخ شروع</th>
+                    <th scope="col">تاریخ پایان</th>
+                    <th scope="col">حجم</th>
+                    <th scope="col">حجم باقی مانده</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _reservedCreditChargeResponse)
+                {
+                    <tr>
+                        <th scope="row">@(Index++)</th>
+                        <td>@item.Title</td>
+                        <td>@item.ShamsiStartTime</td>
+                        <td>@item.ShamsiEndTime</td>
+                        <td>@item.Charge</td>
+                        <td>@item.RemainCharge</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code{
+    public int Index;
+    public List<ReservedCreditChargeResponse> _reservedCreditChargeResponse = new List<ReservedCreditChargeResponse>();
+    protected override async Task OnInitializedAsync()
+    {
+        _reservedCreditChargeResponse = await ReservedCreditChargeService.GetAsyncByAccountId("328684");
+        _reservedCreditChargeResponse = _reservedCreditChargeResponse.OrderByDescending(c => c.StartDateTime).ToList();
+        Index = 1;
+    }
+}

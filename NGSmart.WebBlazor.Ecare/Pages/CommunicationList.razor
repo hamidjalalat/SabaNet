@@ -1,0 +1,70 @@
+﻿@page "/CommunicationList"
+
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+@inject Services.CommunicationListService Service
+
+@if (ListCommunicationList == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>تاریخچه  پیام</h2>
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">شناسه</th>
+                    <th scope="col">نوع ارتباط</th>
+                    <th scope="col">نام اکانت</th>
+                    <th scope="col">دسته بندی</th>
+                    <th scope="col">زمان ارسال</th>
+                    <th scope="col">موضوع</th>
+                    <th scope="col">متن</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListCommunicationList)
+                {
+                    <tr>
+                        <th scope="row">@(Index++)</th>
+                        <td>@item.Id</td>
+                        <td>@item.TypeCommunication</td>
+                        <td>@item.AccountName</td>
+                        <td>@item.Grouping</td>
+                        <td>@item.SendTime</td>
+                        <td>@item.Title</td>
+                        <td>@item.Text</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code {
+    public System.Collections.Generic.IList<CommunicationListByIdResponse> ListCommunicationList;
+    private int Index = 1;
+    public string PartyRoleId = "328684";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+         
+            ListCommunicationList = await Service.GetAsyncByPartyRoleId(PartyRoleId);
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+}

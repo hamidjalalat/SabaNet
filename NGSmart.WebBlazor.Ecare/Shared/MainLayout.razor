@@ -1,0 +1,85 @@
+﻿@using NGSmart.WebBlazor.Ecare.Models;
+@using static NGSmart.WebBlazor.Ecare.Shared.QuickMenu;
+@inherits LayoutComponentBase
+@inject Services.CreditService CreditService
+
+<div class="page">
+    <div class="@SidebarToggle" @onmouseover="MouseIn" @onmouseout="MouseOut">
+        <NavMenu  IsHidden="@MainHidden"/>
+    </div>
+
+
+    <main>
+     <div class="top-row px-4"  style="z-index:1111;padding-top:0px">
+                    اعتبار:  @Credit
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown">
+                                <a @onclick="GetQuickMenuTask" class="nav-link dropdown-toggle navbar-brand" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="navbar-toggler-icon"></span>
+                            </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <div>
+                                        <QuickMenu @ref=QuickMenuRef AccountID=@AccountId />
+                                </div>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle navbar-brand" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="navbar-toggler-icon"></span>
+                            </a>
+                            <ul class="dropdown-menu" style="margin-right:-200px" aria-labelledby="navbarDropdown">
+                                <div>
+                                 <QuickMenu2/>
+                                </div>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+    </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    public int Credit;
+
+    public CreditByPartyRoleIdResponse _CreditByPartyRoleIdResponse = new CreditByPartyRoleIdResponse();
+
+    public string PartyRoleId = "328684";
+    public string AccountId = "379495";
+    public string SidebarToggle = "sidebar";
+    private string MainHidden;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await CreditService.GetAsyncByPartyRoleId(PartyRoleId);
+        MainHidden = "IsHidden";
+        Credit = result.Credit;
+    }
+
+    private QuickMenu QuickMenuRef; 
+    private void GetQuickMenuTask() => QuickMenuRef.GetTask();
+
+    public void MouseIn(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        SidebarToggle = "sidebarFixed";
+        MainHidden = "";
+    }
+    public void MouseOut(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        SidebarToggle = "sidebar";
+        MainHidden = "IsHidden";
+    }
+}

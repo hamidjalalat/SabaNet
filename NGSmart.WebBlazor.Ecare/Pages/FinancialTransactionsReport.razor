@@ -1,0 +1,76 @@
+﻿@page "/FinancialTransactionsReport"
+
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+
+@inject Services.TransactionService Service
+
+@if (ListTransaction == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>تاریخچه تراکنش</h2>
+
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ردیف</th>
+                    <th>نام تراکنش</th>
+                    <th>مبلغ تراکنش (ریال)</th>
+                    <th>تاریخ ثبت</th>
+                    <th> تاریخ اعمال</th>
+                    <th>  وضعیت</th>
+                    <th>  اعتبار (ریال) </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ListTransaction)
+                {
+                    <tr>
+                        <th scope="row">@(Index++)</th>
+                        <td>@item.NameTransaction <br /><span style="color:orangered">@item.Description</span></td>
+                        @if (item.PriceTransaction<0)
+                        {
+                            <td style="color:orangered " dir="ltr" >@item.PriceTransaction</td>
+                        }
+                        else
+                        {
+                            <td dir="ltr">+@item.PriceTransaction</td>
+                        }
+                        <td>@item.StartDate</td>
+                        <td>@item.CompletedDate</td>
+                        <td>@item.StatusName</td>
+                        <td>@item.CurrentValue</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+    <Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code
+{
+    public IList<TransactionByIdResponse> ListTransaction;
+    private int Index = 1;
+    public string PartyRoleId = "328684";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try{
+
+            ListTransaction = await Service.GetAsyncByPartyRoleId(PartyRoleId);
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+
+    }
+}
