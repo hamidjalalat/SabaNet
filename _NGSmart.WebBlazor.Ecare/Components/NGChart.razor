@@ -1,0 +1,77 @@
+﻿
+@using BlazorBootstrap.Extensions
+@using BlazorBootstrap;
+@using Color = System.Drawing.Color
+
+<BarChart  @ref="barChart" Width="500" Class="mb-4 barchart" />
+<style>
+   canvas {
+        font-family: IRANSans !important;
+    }
+</style>
+@code {
+    private BarChart barChart;
+
+    [Parameter]
+    public List<string> LabelsChart { get; set; }
+
+    [Parameter]
+    public string Label1 { get; set; }
+
+    [Parameter]
+    public string Label2 { get; set; }
+
+    [Parameter]
+    public List<double> DataChart1 { get; set; }
+
+    [Parameter]
+    public List<double> DataChart2 { get; set; }
+
+    private ChartData chartData;
+
+    private BarChartOptions chartOptions;
+
+    Random random = new Random();
+
+    protected override void OnInitialized()
+    {
+        chartData = new ChartData
+            {
+                Labels = LabelsChart,
+                Datasets = new List<IChartDataset>()
+            };
+
+        chartData.Datasets.Add(new BarChartDataset()
+            {
+                Label = Label1,
+                Data = DataChart1,
+                BackgroundColor = new List<string> { Color.Red.ToRgbString() },
+                BorderColor = new List<string> { Color.Green.ToRgbString() },
+                BorderWidth = new List<double> { 0 },
+            });
+        chartData.Datasets.Add(new BarChartDataset()
+            {
+                Label = Label2,
+                Data = DataChart2,
+                BackgroundColor = new List<string> { Color.Blue.ToRgbString() },
+                BorderColor = new List<string> { Color.Azure.ToRgbString() },
+                BorderWidth = new List<double> { 0 },
+            });
+
+        chartOptions = new BarChartOptions
+            {
+                Responsive = true,
+                Interaction = new Interaction { Mode = InteractionMode.Index }
+            };
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await barChart.InitializeAsync(chartData, chartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}

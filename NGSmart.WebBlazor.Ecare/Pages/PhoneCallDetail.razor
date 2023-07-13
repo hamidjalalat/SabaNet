@@ -1,0 +1,81 @@
+﻿@page "/PhoneCallDetail"
+
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+
+@inject PhoneCallDetailService Service
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
+
+@if (ListPhoneCallDetail == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>ریز مکالمات</h2>
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ردیف</th>
+                    <th scope="col">شماره مبدا</th>
+                    <th scope="col">شماره مقصد</th>
+                    <th scope="col"> طول زمان مکالمه</th>
+                    <th scope="col">تاریخ مکالمه</th>
+                    <th scope="col">قیمت واحد</th>
+                    <th scope="col">جمع کل</th>
+                    <th scope="col">تعداد</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in ListPhoneCallDetail)
+                {
+                    <tr>
+                        <th scope="row">@(Index++)</th>
+                        <td>@item.Anumber</td>
+                        <td>@item.Bnumber</td>
+                        <td>@item.EventTime</td>
+                        <td>@item.DateShamsi</td>
+                        <td>@item.UnitAmount</td>
+                        <td>@item.TotalAmount</td>
+                        <td>@item.Quantity</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+}
+<Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code {
+    public IList<PhoneCallDetailListByIdResponse> ListPhoneCallDetail;
+    private int Index = 1;
+    public string AccountID = "";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AccountID = UserInfo.AccountId;
+
+        if (AccountID == null)
+        {
+            AccountID = await AccountHolder.GetValueAsync<string>("accAccountID");
+        }
+
+        try
+        {
+            ListPhoneCallDetail = await Service.GetAsyncByAccountID(AccountID);
+        }
+
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+}
+

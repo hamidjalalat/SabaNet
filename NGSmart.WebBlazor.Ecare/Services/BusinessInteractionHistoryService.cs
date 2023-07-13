@@ -1,9 +1,9 @@
 ﻿using Infrastructure;
 using NGSmart.WebBlazor.Ecare.Models;
 
-namespace NGSmart.WebBlazor.Ecare.Services
+namespace Services
 {
-	public class BusinessInteractionService:BaseService
+    public class BusinessInteractionService:BaseService
 	{
 		public BusinessInteractionService(HttpClient client) : base(client)
 		{

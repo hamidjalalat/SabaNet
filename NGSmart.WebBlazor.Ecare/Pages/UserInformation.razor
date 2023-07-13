@@ -1,10 +1,10 @@
 ﻿@page "/UserInformation"
 @using BlazorBootstrap;
 @using NGSmart.WebBlazor.Ecare.Models;
-@using NGSmart.WebBlazor.Ecare.Services;
 
-
-@inject Services.UserInformationService Service
+@inject UserInformationService Service
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
 
 @if (TempUserInformation == null)
 {
@@ -86,15 +86,22 @@ else
 {
     public UserInformationByPartyRoleIdResponse TempUserInformation;
     private int Index = 1;
-    public string PartyRoleId = "337682";
+    public string PartyId = "";
     List<ToastMessage> Messages = new List<ToastMessage>();
 
 
     protected override async Task OnInitializedAsync()
     {
+        PartyId = UserInfo.PartyID;
+
+        if (PartyId == null)
+        {
+            PartyId = await AccountHolder.GetValueAsync<string>("accPartyID");
+        }
+
         try
         {
-            TempUserInformation = await Service.GetAsyncByPartyRoleId(PartyRoleId);
+            TempUserInformation = await Service.GetAsyncByPartyRoleId(PartyId);
         }
         catch (Exception)
         {

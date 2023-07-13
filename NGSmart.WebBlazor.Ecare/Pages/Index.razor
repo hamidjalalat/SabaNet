@@ -1,14 +1,16 @@
-﻿@page "/"
+﻿@page "/index"
 @using System.IO;
 @using Components;
 @using System.Collections;
 @using NGSmart.WebBlazor.Ecare.Models;
 @using NGSmart.WebBlazor.Ecare.Components;
 
-@inject Services.RemainCreditChargeService Service;
-@inject Services.ServiceExpireDateService ServiceExpireDateService;
-@inject Services.GetCurrentServiceInfoService GetCurrentServiceInfoService;
-@inject Services.RemainFlatChargeService RemainFlatChargeService;
+@inject RemainCreditChargeService Service;
+@inject ServiceExpireDateService ServiceExpireDateService;
+@inject GetCurrentServiceInfoService GetCurrentServiceInfoService;
+@inject RemainFlatChargeService RemainFlatChargeService;
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
 
 @inject IJSRuntime JSRuntime
 
@@ -28,10 +30,7 @@ else
                         <label style="font-weight:600">
                             آخرین سرویس :  @LastServiceName
                         </label>
-                        &nbsp;
-                        <span>
-
-                        </span>
+                       
                     </div>
                     <div class="col-md-1">
                         <button class="btn btn-primary btn-sm">تمدید</button>
@@ -53,6 +52,7 @@ else
                             @AccountExpireDateModel.shamsiStringExpireDate
                         </span>
                     </div>
+                
                     <div style="margin-top:30px;">
                         <div class="remain-charge-chart">
                             <div class="progressbar-row">
@@ -65,6 +65,9 @@ else
                             </div>
                         </div>
                         <br/>
+                        <br />
+                        <br />
+                        <br />
                         <ProgressBar DisplayText="@ServiceExpireDate" DisplayValuePercent="@RemainTimePercent" />
                     </div>
                     <br/>
@@ -133,14 +136,17 @@ else
     public GetCurrentServiceInfoResponse _GetCurrentServiceInfoResponse = new GetCurrentServiceInfoResponse();
     public RemainFlatChargeResponse _RemainFlatChargeResponse = new RemainFlatChargeResponse();
 
+    public string AccountId="";
+    public string PartyRoleId = "";
+    public string AccountName = "";
+
     public string Label1 = "داخلی";
     public string Label2 = "خارجی";
     List<string> Labels =new List<string>() { "فروردین", "اردیبهشت", "خرداد", "مرداد", "شهریور", "مهر", "آذر" };
     List<double> DataChart1 = new List<double>() {30,20,10,40,90,60,70 };
     List<double> DataChart2 = new List<double>() {40.5,20.2,30.50,10,50.30,60.80,70.80 };
 
-    public string PartyRoleId = "328684";
-    public string AccountId = "363271";
+
     const string carouselName = "carouselExampleIndicators";
     const string chartName = "chartdiv";
     public string ServiceExpireDate = string.Empty;
@@ -191,22 +197,37 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _GetCurrentServiceInfoResponse = await GetCurrentServiceInfoService.GetAsyncByAccountId("363271");
+        PartyRoleId = await AccountHolder.GetValueAsync<string>("accPartyRoleID");
+        UserInfo.PartyRoleId = PartyRoleId;
+
+        AccountId = await AccountHolder.GetValueAsync<string>("accAccountID");
+        UserInfo.AccountId = AccountId; 
+
+        AccountName = await AccountHolder.GetValueAsync<string>("accAccountName");
+        UserInfo.AccountName = AccountName;
+
+        _GetCurrentServiceInfoResponse = await GetCurrentServiceInfoService.GetAsyncByAccountId(AccountId);
         LastServiceName = _GetCurrentServiceInfoResponse.serviceName;
-        var result = await Service.GetAsyncByAccountId(PartyRoleId);
+        var result = await Service.GetAsyncByAccountId(AccountId);
         AccountExpireDateModel = await ServiceExpireDateService.GetAsyncByPartyRoleId(AccountId);
         RemainCharge = result;
         RemainTime.Title = "74 روز  , از 180 روز";
         ServiceExpireDate = $"زمان باقی مانده : {AccountExpireDateModel.shamsiStringRemainTime}";
         ServiceRemainCharge = $"حجم زماندار باقی مانده : {RemainCharge.RemainCreditChargeFaGBMB}";
         DateTime accountActivationDate = _GetCurrentServiceInfoResponse.serviceActivateDate;
+
+        if (AccountExpireDateModel.expireDate !=null)
+        {
         DateTime accountExpireDate = AccountExpireDateModel.expireDate.Value;
         int Duration = Convert.ToInt16(((accountExpireDate - accountActivationDate).TotalDays));
         int RemainDays = (AccountExpireDateModel.remainTime).Days;
         RemainTimePercent = (RemainDays * 100) / Duration;
+        }
+
+
         int RemainChargeMB = RemainCharge.RemainCreditChargeMB;
         RemainChargePercent = 65; //badan dorost mishe
-        _RemainFlatChargeResponse = await RemainFlatChargeService.GetAsyncByAccountId(AccountId);
+        _RemainFlatChargeResponse = await RemainFlatChargeService.GetAsyncByAccountId(UserInfo.AccountId.ToString());
         RemainFlatCharge = $"حجم فلت باقی مانده : {_RemainFlatChargeResponse.remainFlatChargeFaGBMB}";
         RemainFlatChargePercent = 84; //badan dorost mishe
     }

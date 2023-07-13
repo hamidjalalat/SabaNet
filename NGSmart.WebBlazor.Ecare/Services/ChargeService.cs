@@ -1,7 +1,7 @@
 ﻿using Infrastructure;
 using NGSmart.WebBlazor.Ecare.Models;
 
-namespace NGSmart.WebBlazor.Ecare.Services
+namespace Services
 {
     public class ChargeService: BaseService
     {

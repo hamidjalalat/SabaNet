@@ -1,0 +1,137 @@
+﻿@page "/PanelVoip"
+
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+
+@inject VoipUserChargeService Service
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
+<style>
+    .lable {
+        border-radius: 3px;
+        background-color: red;
+        color: white !important;
+        padding-left: 2px;
+        padding-right: 2px;
+        margin-right: 2px;
+    }
+</style>
+@if (ListVoipUserCharge == null)
+{
+    <FullSkeletone></FullSkeletone>
+}
+else
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-primary" role="alert">
+                <span style="font-weight: bold">شارژ باقی مانده:</span>  <span class="has-number2 lable">@RemainCharge.ToString("#,##0") ريال</span>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var item in ListVoipUserCharge)
+        {
+            <div  class="col-12 col-sm-12 col-md-6 col-lg-4 p-0 text-right">
+                <div class="p-2 mr-1 ml-1" style="border: solid 1px #53D769; border-radius: 5px;margin:1px">
+                    <h5>نام شارژ: @item.ChargeName</h5>
+                    <hr>
+                   
+                       <div class="row">
+                           <div class="col-6">
+                            <div class="col-12">
+                                <b class="font-weight-bold">باقی مانده اعتبار : </b>
+
+                                <span class="has-number2 text-left lable"> @item.Credit.ToString("#,##0") ريال</span>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <b class="font-weight-bold">شناسه شارژ:</b> <span class=" text-left"> @item.Serial</span>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <b class="font-weight-bold">تاریخ اعمال:</b>   <span class=" text-left"> @item.StartDateStr</span>
+                                <br>
+                                <br>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <b class="font-weight-bold">تاریخ انقضا:</b> <span class=" text-left"> @item.EndDateStr</span>
+                                <br>
+                                <br>
+                            </div>
+                           </div>
+                        @if (item.IsExpired)
+                        {
+                            <div class="col-6">
+                                <img  style="width:150px" src="/images/icon-expired.png" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-6">
+                                <img style="width:150px" src="/images/siemens.png" />
+                            </div>
+                        }
+
+                       </div>
+                    @if (item.IsExpired)
+
+                    {
+                        <div class="col-12 text-center pt-1" style="border-top: solid 1px #f1f1f1; background-color:orangered">
+                            <i class="fa-solid fa-phone-slash"></i>
+                            <span class="font-weight-bold" style="color:white">نامعتبر</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-12 text-center pt-1" style="border-top: solid 1px #f1f1f1; background-color: #53D769">
+                            <i class="fa-solid fa-phone-flip"></i>
+                            <span class="font-weight-bold" style="color:white">معتبر</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+
+@code {
+    public decimal RemainCharge;
+    public System.Collections.Generic.IList<VoipUserChargeListByIdResponse> ListVoipUserCharge;
+    private int Index = 1;
+    public string AccountID = "";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        AccountID = UserInfo.AccountId;
+
+        if (AccountID == null)
+        {
+            AccountID = await AccountHolder.GetValueAsync<string>("accAccountID");
+        }
+
+        try
+        {
+            ListVoipUserCharge = await Service.GetAsyncByAccountID(AccountID);
+            foreach (var item in ListVoipUserCharge)
+            {
+                if (!item.IsExpired)
+                {
+                    RemainCharge = RemainCharge + item.Credit;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+}
+

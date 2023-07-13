@@ -1,0 +1,137 @@
+﻿@using NGSmart.WebBlazor.Ecare.Models;
+@using Services;
+@inject UserInformationService UserInformationService;
+<div class="card mb-5 mb-xl-10" id="kt_profile_details_view">
+    <div class="card-header cursor-pointer">
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">مشخصات پروفایل</h3>
+        </div>
+        <a href="../../demo1/dist/account/settings.html" class="btn btn-sm btn-primary align-self-center">ویرایش</a>
+    </div>
+    <div class="card-body p-9">
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">نام کامل</label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@_Response.Name @_Response.Family</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">شماره ADSL</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">@_Response.ADSLNumber</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">شماره تلفن ثابت</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">@_Response.PhoneNumber</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">مرکز</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">@_Response.Center</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">
+                شماره تلفن
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Phone number must be active" data-bs-original-title="Phone number must be active" data-kt-initialized="1"></i>
+            </label>
+            <div class="col-lg-8 d-flex align-items-center">
+                <span class="fw-bold fs-6 text-gray-800 me-2">@_Response.MoblieNumber</span>
+                <span class="badge badge-success">تایید شده</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">آدرس صاحب اشتراك</label>
+            <div class="col-lg-8">
+                <a href="#" class="fw-semibold fs-6 text-gray-800 text-hover-primary">@_Response.Address</a>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">
+                کد ملی مالک
+                <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Country of origination" data-bs-original-title="Country of origination" data-kt-initialized="1"></i>
+            </label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@_Response.IdentificationNumber</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">نتیجه درخواست شاهکار</label>
+            <div class="col-lg-8">
+                <span class="fw-bold fs-6 text-gray-800">@_Response.ResultShahkar</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <label class="col-lg-4 fw-semibold text-muted">کد پستی صاحب اشتراك</label>
+            <div class="col-lg-8">
+                <span class="fw-semibold fs-6 text-gray-800">@_Response.PostalCode</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">شناسه منبع</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">-</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">نوع قرارداد</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">-</span>
+            </div>
+        </div>
+        <div class="row mb-7">
+            <label class="col-lg-4 fw-semibold text-muted">روش جذب</label>
+            <div class="col-lg-8 fv-row">
+                <span class="fw-semibold text-gray-800 fs-6">-</span>
+            </div>
+        </div>
+        <div style class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
+            <span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect>
+                    <rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect>
+                    <rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect>
+                </svg>
+            </span>
+            <div class="d-flex flex-stack flex-grow-1">
+                <div class="fw-semibold">
+                    <h4 class="text-gray-900 fw-bold">هشدار!</h4>
+                    <div class="fs-6 text-gray-700">
+                        شما یک سرویس غیر فعال دارید
+                        <a class="fw-bold" style="color:cornflowerblue;" href="../../demo1/dist/account/billing.html">جمع آوری سرویس</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-8 mb-xl-10">
+    </div>
+    <div class="col-xl-4 mb-5 mb-xl-10">
+        <div class="card h-md-100" dir="ltr">
+        </div>
+    </div>
+</div>
+<div class="row gy-5 g-xl-10">
+    <div class="col-xl-4">
+        <div class="card card-flush h-xl-100">
+        </div>
+    </div>
+    <div class="col-xl-8">
+    </div>
+</div>
+@code{
+    [Parameter]
+    public string PartyRoleID{ get; set; }
+
+    public UserInformationByPartyRoleIdResponse _Response = new UserInformationByPartyRoleIdResponse();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _Response = await UserInformationService.GetAsyncByPartyRoleId(PartyRoleID);
+    }
+}

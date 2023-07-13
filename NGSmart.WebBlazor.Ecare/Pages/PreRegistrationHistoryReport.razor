@@ -2,9 +2,11 @@
 
 @using BlazorBootstrap;
 @using NGSmart.WebBlazor.Ecare.Models;
-@using NGSmart.WebBlazor.Ecare.Services;
 
-@inject Services.PreFactorInfoService Service
+@inject PreFactorInfoService Service
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
+
 @if (ListPreFactorInfo == null)
 {
   <TableSkeleton></TableSkeleton>
@@ -53,12 +55,18 @@ else
 @code {
     public IList<PreFactorInfoByIdResponse> ListPreFactorInfo;
     private int Index = 1;
-    public string PartyRoleId = "328684";
+    public string PartyRoleId = "";
     List<ToastMessage> Messages = new List<ToastMessage>();
-
 
     protected override async Task OnInitializedAsync()
     {
+        PartyRoleId = UserInfo.PartyRoleId;
+
+        if (PartyRoleId == null)
+        {
+            PartyRoleId = await AccountHolder.GetValueAsync<string>("accPartyRoleID");
+        }
+
         try
         {
             ListPreFactorInfo = await Service.GetAsyncByPartyRoleId(PartyRoleId);

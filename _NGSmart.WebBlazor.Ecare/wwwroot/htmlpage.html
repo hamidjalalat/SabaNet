@@ -1,0 +1,147 @@
+﻿
+
+<body>
+    <div class='flex-container'>
+        <div class='sidebar'>
+            <div class='title'>
+                Sidebar
+            </div>
+            <ul class='nav'>
+                <li>
+                    <a>Dashboard</a>
+                </li>
+                <li>
+                    <a>Settings</a>
+                </li>
+                <li>
+                    <a>Logout</a>
+                </li>
+            </ul>
+        </div>
+        <div class='content wide'>
+            <h1>Flexbox Off Canvas Menu</h1>
+        </div>
+    </div>
+</body>
+
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>7Learn.com - Color Palette - Flexbox Fridays</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <style type="text/css">
+        /*https://codepen.io/team/lincolnloop/pen/QwQwza*/
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .color-list {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+      
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .color {
+         
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+         
+            -webkit-box-flex: 1;
+            -ms-flex: 1 0 1em;
+            flex: 1 0 1em;
+            box-shadow: 0 0 30px #424242;
+            /* Handles any clipping/overflow issues on transition */
+            overflow: hidden;
+            padding: 1em;
+            color: white;
+            -webkit-transition: -webkit-flex-basis 500ms ease-in-out;
+            transition: -webkit-flex-basis 500ms ease-in-out;
+            transition: flex-basis 500ms ease-in-out;
+            transition: flex-basis 500ms ease-in-out, -webkit-flex-basis 500ms ease-in-out, -ms-flex-preferred-size 500ms ease-in-out;
+        }
+
+            .color:hover {
+                flex-basis: 2000em;
+            }
+
+                .color:hover .details {
+                    opacity: 1;
+                }
+
+        .name {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .details {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            opacity: 0;
+            -webkit-transition: opacity 500ms ease-in-out;
+            transition: opacity 500ms ease-in-out;
+        }
+
+            .details li {
+                font-size: 1em;
+                line-height: 2em;
+            }
+
+        @media (min-width: 60px) {
+            .color-list {
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                -ms-flex-direction: row;
+                flex-direction: row;
+            }
+
+            .color {
+            
+                -ms-flex-negative: 1;
+                flex-shrink: 1;
+            }
+        }
+ 
+    </style>
+</head>
+
+
+<body>
+    <div class="color-list">
+        <section class="color" style="background: hsl(4,99%,66%);width:2px;height:100px">
+            <h2 class="name">Persimmon</h2>
+            <ul class="details">
+                <li>hsl(4,99%,66%)</li>
+                <li>#FE5E52</li>
+                <li>178 C</li>
+                <li>485 U</li>
+                <li>Primary</li>
+            </ul>
+        </section>
+     
+        
+
+  
+    </div>
+    <script type="text/javascript">
+    </script>
+</body>
+
+

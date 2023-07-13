@@ -2,9 +2,10 @@
 
 @using BlazorBootstrap;
 @using NGSmart.WebBlazor.Ecare.Models;
-@using NGSmart.WebBlazor.Ecare.Services;
 
-@inject Services.TransactionService Service
+@inject AccountHolder AccountHolder
+@inject TransactionService Service
+@inject UserInfoSingleton UserInfo
 
 @if (ListTransaction == null)
 {
@@ -57,12 +58,20 @@ else
 {
     public IList<TransactionByIdResponse> ListTransaction;
     private int Index = 1;
-    public string PartyRoleId = "328684";
+    public string PartyRoleId = "";
     List<ToastMessage> Messages = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
-        try{
+        PartyRoleId = UserInfo.PartyRoleId;
+
+        if (PartyRoleId == null)
+        {
+            PartyRoleId = await AccountHolder.GetValueAsync<string>("accPartyRoleID");
+        }
+
+        try
+        {
 
             ListTransaction = await Service.GetAsyncByPartyRoleId(PartyRoleId);
         }

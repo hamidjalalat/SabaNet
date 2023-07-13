@@ -1,0 +1,146 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" > </span>
+                <span class="@IsHidden">داشبورد</span>
+                
+                
+            </NavLink>
+            @if (ClassArrowHistory)
+            {
+                <NavLink class="nav-link" @onclick="()=>ArrowHistory()">
+                    <span class="oi oi-caret-bottom" > </span>
+
+                    <span class="@IsHidden">تاریخچه</span>
+                  
+                </NavLink>
+            }
+            else
+            {
+                <NavLink class="nav-link" @onclick="()=>ArrowHistory()">
+                    <span class="oi oi-caret-left" > </span>
+
+                    <span class="@IsHidden">تاریخچه</span>
+                  
+                </NavLink>
+            }
+            @if (expandSubNavHistory)
+            {
+                <NavLink class="nav-link" href="PurchaseHistory" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp; <span class="oi oi-cart" > </span>
+
+                    <span class="@IsHidden"> تاریخچه خرید</span>
+                   
+                </NavLink>
+                <NavLink class="nav-link" href="CommunicationList" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp; <span class="oi oi-envelope-closed" > </span>
+
+                    <span class="@IsHidden">تاریخچه پیام</span>
+                  
+                </NavLink>
+                <NavLink class="nav-link" href="PreRegistrationHistoryReport" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp; <span class="oi oi-folder" > </span>
+
+                    <span class="@IsHidden">تاریخچه ثبت</span>
+                   
+                </NavLink>
+
+                <NavLink class="nav-link" href="FinancialTransactionsReport" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp; <span class="oi oi-list" > </span>
+
+                    <span class="@IsHidden">تاریخچه تراکنش</span>
+                   
+                </NavLink>
+            }
+            @if (ClassArrowUsage)
+            {
+                <NavLink class="nav-link" @onclick="()=>ArrowUsage()">
+                    <span class="oi oi-caret-bottom" >  </span>
+
+                    <span class="@IsHidden">مصرف</span>
+                   
+                </NavLink>
+            }
+            else
+            {
+                <NavLink class="nav-link" @onclick="()=>ArrowUsage()">
+                    <span class="oi oi-caret-left" >  </span>
+
+                    <span class="@IsHidden">مصرف</span>
+                   
+                </NavLink>
+            }
+            @if (ClassArrowUsage)
+            {
+                <NavLink class="nav-link" href="UsageDetail" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="oi oi-list-rich" > </span>
+
+                    <span class="@IsHidden">ریز مصرف</span>
+                  
+                </NavLink>
+                <NavLink class="nav-link" href="UsageDetailAggregation" Match="NavLinkMatch.All">
+                    &nbsp;&nbsp;&nbsp;&nbsp; <span class="oi oi-list-rich" > </span>
+
+                    <span class="@IsHidden">ریز مصرف تجمعی</span>
+                   
+                </NavLink>
+
+            }
+            <NavLink class="nav-link" href="UserInformation" Match="NavLinkMatch.All">
+                <span class="oi oi-person" > </span>
+
+                <span class="@IsHidden">اطلاعات اشتراک</span>
+               
+            </NavLink>
+            <NavLink class="nav-link" href="ReservedCreditCharge" Match="NavLinkMatch.All">
+                <span class="oi oi-file" > </span>
+
+                <span class="@IsHidden">شارژ رزرو</span>
+               
+            </NavLink>
+        </div>
+    </nav>
+</div>
+<style>
+    .IsHidden {
+        visibility: hidden;
+    }
+</style>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandSubNavHistory;
+    private bool expandSubNavUsage;
+    private bool ClassArrowHistory;
+    private bool ClassArrowUsage;
+
+   [Parameter]
+    public string IsHidden { get; set; }
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ArrowHistory()
+    {
+        ClassArrowHistory = !ClassArrowHistory;
+        expandSubNavHistory = !expandSubNavHistory;
+    }
+
+    private void ArrowUsage()
+    {
+        ClassArrowUsage = !ClassArrowUsage;
+        expandSubNavUsage = !expandSubNavUsage;
+    }
+}

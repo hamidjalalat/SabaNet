@@ -1,4 +1,6 @@
-﻿namespace NGSmart.WebBlazor.Ecare.Services
+﻿using NGSmart.WebBlazor.Ecare.Models;
+
+namespace Services
 {
     public class PostService : Infrastructure.BaseService
     {
@@ -11,10 +13,10 @@
             return "Posts";
         }
 
-        public async Task<IList<Models.Post>>
+        public async Task<IList<Post>>
         GetAsync()
         {
-            var result = await GetAsync<IList<Models.Post>>();
+            var result = await GetAsync<IList<Post>>();
 
             return result;
         }

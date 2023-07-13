@@ -1,0 +1,72 @@
+﻿@page "/PreRegistrationHistoryReport"
+
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+
+@inject Services.PreFactorInfoService Service
+@if (ListPreFactorInfo == null)
+{
+  <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>تاریخچه ثبت</h2>
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ردیف</th>
+                    <th scope="col">نام بسته</th>
+                    <th scope="col"> شماره پیگیری</th>
+                    <th scope="col">تاریخ صدور</th>
+                    <th scope="col">تاریخ اعتبار</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in ListPreFactorInfo)
+                {
+                    <tr>
+                        <th scope="row">@(Index++)</th>
+                        <td>@item.PackageName</td>
+                        @if (item.UsedDate != null)
+                        {
+                            <td style="color:#70ca63; font:bold" class="hidden-phone text-center">نهایی شده</td>
+                        }
+                        else
+                        {
+                            <td style="color:red; font:bold" class="hidden-phone text-center">منقضی شده</td>
+                        }
+                        <td>@item.ShamsiStartDate</td>
+                        <td>@item.ShamsiEndDate</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+}
+    <Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code {
+    public IList<PreFactorInfoByIdResponse> ListPreFactorInfo;
+    private int Index = 1;
+    public string PartyRoleId = "328684";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ListPreFactorInfo = await Service.GetAsyncByPartyRoleId(PartyRoleId);
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+}

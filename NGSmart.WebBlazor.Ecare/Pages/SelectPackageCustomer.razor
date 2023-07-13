@@ -1,0 +1,71 @@
+﻿@page "/SelectPackageCustomer/{id}"
+@using NGSmart.WebBlazor.Ecare.Models;
+
+@inject NavigationManager navigationManager
+@inject PackageInfoByIdService Service;
+  id:@Id
+<br />
+<br />
+<div class="row">
+    <div class="col-1 col-md-1">
+      
+  </div>
+    <div class="col-8 col-md-8" >
+      <span  style="color:deepskyblue;font-size:12px">جشنواره </span>
+        <p style="font-size:16px ">@PackageCardInfo.PackageDisplayItem1</p>
+     <hr />
+        <p style="font-size:12px ">
+            <b >جشنواره</b> : مشترک جدید ، به همراه مودم VDSL
+     </p>
+        <p style="font-size:12px ">
+            <b>سرعت</b> : 16 مگابیت بر ثانیه
+     </p>
+        <p style="font-size:12px ">
+            <b>نحوه ارائه حجم</b> : طی دوره ( غیر قابل انتقال به دوره بعد)
+     </p>
+        <p style="font-size:12px ">
+            <b>  ADSL 2136653058</b>
+        </p>
+        <p style="font-size:18px">
+            قیمت: <button class="btn btn-sm btn-danger" >9,810,000ریال</button>
+        </p>
+
+        <br />
+        <div dir="ltr">
+            <button class="btn btn-primary">
+                پرداخت
+            </button>
+            <button @onclick="()=>GoToCustomerPackagePage()" class="btn btn-primary">
+                برگشت
+            </button>
+        </div>
+       
+    </div>
+  
+   
+</div>
+
+
+@code {
+    public PackageCard PackageCardInfo;
+
+    [Parameter]
+    public string Id { get; set; } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            PackageCardInfo = await Service.GetAsyncById(Id);
+        }
+
+        catch (Exception)
+        {
+            
+        }
+    }
+    private void GoToCustomerPackagePage()
+    {
+        navigationManager.NavigateTo(uri: "/CustomerPackage", forceLoad: false);
+    }
+}

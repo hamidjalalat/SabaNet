@@ -1,0 +1,213 @@
+﻿@page "/"
+@using System.IO;
+@using Components;
+@using System.Collections;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Components;
+
+@inject Services.RemainCreditChargeService Service;
+@inject Services.ServiceExpireDateService ServiceExpireDateService;
+@inject Services.GetCurrentServiceInfoService GetCurrentServiceInfoService;
+@inject Services.RemainFlatChargeService RemainFlatChargeService;
+
+@inject IJSRuntime JSRuntime
+
+<PageTitle>داشبورد</PageTitle>
+
+@if (RemainCharge == null)
+{
+    <FullSkeletone></FullSkeletone>
+}
+else
+{
+    <div class="row" style="padding:5px">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-11">
+                        <label style="font-weight:600">
+                            آخرین سرویس :  @LastServiceName
+                        </label>
+                        &nbsp;
+                        <span>
+
+                        </span>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary btn-sm">تمدید</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6" style="padding:5px">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <label>
+                            تاریخ انقضا سرویس جاری:
+                        </label>
+                        <span style="font-size:16px;">
+                            @AccountExpireDateModel.shamsiStringExpireDate
+                        </span>
+                    </div>
+                    <div style="margin-top:30px;">
+                        <div class="remain-charge-chart">
+                            <div class="progressbar-row">
+                                <div class="progressbar-Item">
+                                    <ProgressBar DisplayText="@ServiceRemainCharge" DisplayValuePercent="@RemainChargePercent" />
+                                </div>
+                                <div class="progressbar-Item">
+                                    <ProgressBar DisplayText="@RemainFlatCharge" DisplayValuePercent="@RemainFlatChargePercent" />
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <ProgressBar DisplayText="@ServiceExpireDate" DisplayValuePercent="@RemainTimePercent" />
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6" style="padding:5px">
+            <div class="card">
+                <div class="card-body">
+                  @*  <div class="control-section" align='center'>
+                        <div id="chartdiv"></div>
+                    </div>*@
+                    <NGChart  Label1="@Label1" Label2="@Label2" LabelsChart="@Labels" DataChart1="@DataChart1" DataChart2="@DataChart2"></NGChart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <TemplatedCarousel Items="AssetImages" TItem="ImageFile" AutoScrollInterval="5" OnCarouselItemClicked="OnCarouselItemClicked">
+            <ItemTemplate>
+                <img class="d-block center" src="@GetImageSource(@context)" alt="@context.FileName">
+            </ItemTemplate>
+        </TemplatedCarousel>
+    </div>
+
+}
+<style>
+    .progress {
+        height: 1.5rem;
+    }
+
+    .remain-charge-chart {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #chartdiv {
+        font-family: IRANSans !important;
+        width: 100%;
+        height: 220px;
+    }
+
+    .progressbar-row {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .progressbar-Item {
+        flex: 1;
+    }
+</style>
+@code {
+    public string LastServiceName;
+
+    public LastServiceById LastService = new LastServiceById();
+    public GetRemainCreditChargeByAccountIdResponse RemainCharge;
+    public RemainTimebyId RemainTime = new RemainTimebyId();
+    public ServiceExpireDateResponse AccountExpireDateModel = new ServiceExpireDateResponse();
+    public Task<CreditByPartyRoleIdResponse> Credit;
+    public GetCurrentServiceInfoResponse _GetCurrentServiceInfoResponse = new GetCurrentServiceInfoResponse();
+    public RemainFlatChargeResponse _RemainFlatChargeResponse = new RemainFlatChargeResponse();
+
+    public string Label1 = "داخلی";
+    public string Label2 = "خارجی";
+    List<string> Labels =new List<string>() { "فروردین", "اردیبهشت", "خرداد", "مرداد", "شهریور", "مهر", "آذر" };
+    List<double> DataChart1 = new List<double>() {30,20,10,40,90,60,70 };
+    List<double> DataChart2 = new List<double>() {40.5,20.2,30.50,10,50.30,60.80,70.80 };
+
+    public string PartyRoleId = "328684";
+    public string AccountId = "363271";
+    const string carouselName = "carouselExampleIndicators";
+    const string chartName = "chartdiv";
+    public string ServiceExpireDate = string.Empty;
+    public string ServiceRemainCharge = string.Empty;
+    public int RemainTimePercent;
+    public int RemainChargePercent;
+    public int RemainFlatChargePercent;
+    public string RemainFlatCharge;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        object[] parametr = { chartName };
+        await JSRuntime.InvokeVoidAsync("startChart", parametr);
+        //await JSRuntime.InvokeVoidAsync("fontApplay", "AR05KJBV3TLEB");
+    }
+
+    List<ImageFile> AssetImages
+    {
+        get
+        {
+            List<ImageFile> imagesToReturn = new List<ImageFile>();
+
+            imagesToReturn.Add(new ImageFile() { Url = "/css/image/Screenshot8.png", FileName = "dagf" });
+            imagesToReturn.Add(new ImageFile() { Url = "/css/image/Screenshot.jpg", FileName = "fdgf" });
+            imagesToReturn.Add(new ImageFile() { Url = "/css/image/Screenshot9.png", FileName = "sasgfg" });
+            imagesToReturn.Add(new ImageFile() { Url = "/css/image/Screenshot10.png", FileName = "sagf" });
+
+            return imagesToReturn;
+        }
+    }
+
+    private string GetImageSource(ImageFile imageFile)
+    {
+        string imageSrc = imageFile.Url;
+
+        if (string.IsNullOrEmpty(imageFile.Url) && imageFile.FileContent?.Length > 0)
+        {
+            imageSrc = imageFile.Base64Image;
+        }
+
+        return imageSrc;
+    }
+
+    void OnCarouselItemClicked(object sender, int indexClicked)
+    {
+        Console.WriteLine($"Carousel Index Clicked: {indexClicked}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _GetCurrentServiceInfoResponse = await GetCurrentServiceInfoService.GetAsyncByAccountId("363271");
+        LastServiceName = _GetCurrentServiceInfoResponse.serviceName;
+        var result = await Service.GetAsyncByAccountId(PartyRoleId);
+        AccountExpireDateModel = await ServiceExpireDateService.GetAsyncByPartyRoleId(AccountId);
+        RemainCharge = result;
+        RemainTime.Title = "74 روز  , از 180 روز";
+        ServiceExpireDate = $"زمان باقی مانده : {AccountExpireDateModel.shamsiStringRemainTime}";
+        ServiceRemainCharge = $"حجم زماندار باقی مانده : {RemainCharge.RemainCreditChargeFaGBMB}";
+        DateTime accountActivationDate = _GetCurrentServiceInfoResponse.serviceActivateDate;
+        DateTime accountExpireDate = AccountExpireDateModel.expireDate.Value;
+        int Duration = Convert.ToInt16(((accountExpireDate - accountActivationDate).TotalDays));
+        int RemainDays = (AccountExpireDateModel.remainTime).Days;
+        RemainTimePercent = (RemainDays * 100) / Duration;
+        int RemainChargeMB = RemainCharge.RemainCreditChargeMB;
+        RemainChargePercent = 65; //badan dorost mishe
+        _RemainFlatChargeResponse = await RemainFlatChargeService.GetAsyncByAccountId(AccountId);
+        RemainFlatCharge = $"حجم فلت باقی مانده : {_RemainFlatChargeResponse.remainFlatChargeFaGBMB}";
+        RemainFlatChargePercent = 84; //badan dorost mishe
+    }
+}

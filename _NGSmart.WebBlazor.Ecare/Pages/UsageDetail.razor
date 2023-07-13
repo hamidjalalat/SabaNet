@@ -1,0 +1,162 @@
+﻿@page "/UsageDetail"
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+@inject Services.BusinessDomainPropertyService BusinessDomainPropertyService
+@inject Services.AccountLogTopUsageService AccountLogTopUsageService
+
+<PageTitle>ریز مصرف</PageTitle>
+
+@if (ListAccountLogTopUsage == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>ریز مصرف</h2>
+    <hr />
+    <div style="margin-bottom:2px" class="card">
+        <div class="card-body">
+            <div class="row" style="font-size:12px">
+                <div class="col-3">
+                    <label>از تاریخ</label>
+                    <input @bind="StartDate" type="text" />
+                </div>
+                <div class="col-3">
+                    <label>تا تاریخ</label>
+                    <input @bind="EndDate" type="text" />
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-10">
+                            <select @bind="ServiceType" style="width:100%">
+                                <option value="">تجمیع گزارش شبکه ها</option>
+                                @foreach (var item in ListBusinessDomainProperty)
+                                {
+                                    <option value="@item.PropertyName">@item.Description</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <button class="btn btn-primary btn-sm" @onclick="()=>GetAccountLogTopUsage()" style="">جستجو</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="font-size:11px" class="table-responsive">
+            <table class="table table-bordered table-condensed table-striped table-hover ">
+                <thead>
+                    <tr style="font-size:12px">
+                        <th scope="col">ردیف</th>
+                        <th scope="col">نوع مصرف</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">MAC</th>
+                        <th scope="col">Port</th>
+                        <th scope="col">دلیل قطع</th>
+                        <th scope="col">دانلود(MB)</th>
+                        <th scope="col">آپلود(MB)</th>
+                        <th scope="col">جمع مصرف(MB)</th>
+                        <th scope="col">جمع محاسبه شده(MB)</th>
+                        <th scope="col">مدت زمان اتصال</th>
+                        <th scope="col">شروع اتصال</th>
+                        <th scope="col">پایان اتصال</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in AccountsUsageDetail)
+                    {
+                        <tr>
+                            <th scope="row">@(Index++)</th>
+                            <td>@item.PersianUsageTypeName</td>
+                            <td>@item.ipAddress</td>
+                            <td>@item.macAddress</td>
+                            <td>@item.portid</td>
+                            <td>@item.disconnectCause</td>
+                            <td>@item.DownloadMB</td>
+                            <td>@item.UploadMB</td>
+                            <td>@(item.UploadMB + item.DownloadMB)</td>
+                            <td>@(item.volumeSentMB + item.volumeRecievedMB)</td>
+                            <td>@((item.ConvertStartTime - item.ConvertstopTime).ToString().Replace(".", " روز و ") + " ساعت ")</td>
+                            <td>@item.ShamsiStartDateTime</td>
+                            <td>@item.ShamsiEndDateTime</td>
+                        </tr>
+
+                        TotalDownloadMB = TotalDownloadMB + item.DownloadMB;
+                        TotalUploadMB = TotalUploadMB + item.UploadMB;
+                        TotalUsage = TotalUsage + (item.UploadMB + item.DownloadMB);
+                        TotalComputed = TotalComputed + (item.volumeSentMB + item.volumeRecievedMB);
+                    }
+                    <tr style="background-color:darkgrey">
+                        <td colspan="6">جمع</td>
+                        <td>@TotalDownloadMB</td>
+                        <td>@TotalUploadMB</td>
+                        <td>@TotalUsage</td>
+                        <td>@TotalComputed</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+    <Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code {
+    public IList<BusinessDomainProperty> ListBusinessDomainProperty = new List<BusinessDomainProperty>();
+    public GetLogByAccountIdResponse ListAccountLogTopUsage;
+    public List<AccountsUsageDetail> AccountsUsageDetail = new List<AccountsUsageDetail>();
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+    public string BusinessDomainID = "27";
+    public string AccountId = "363271";
+    public string StartDate = DateTime.Now.Date.AddDays(-7).ToString();
+    public string EndDate = DateTime.Now.ToString();
+    public string ISGS_AAAServiceId = "0";
+    public string ServiceType = "";
+    private int Index;
+
+    public decimal TotalDownloadMB;
+    public decimal TotalUploadMB;
+    public decimal TotalUsage;
+    public decimal TotalComputed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            ListBusinessDomainProperty = await BusinessDomainPropertyService.GetAsyncByBusinessDomainID(BusinessDomainID);
+            ListAccountLogTopUsage = await AccountLogTopUsageService.GetAsyncAccountLogTopUsageId(AccountId, StartDate, EndDate, ISGS_AAAServiceId, ServiceType);
+            AccountsUsageDetail = ListAccountLogTopUsage.lstAccountsUsageDetai.OrderBy(C => C.stopTime).ToList();
+
+            Index = 1;
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+
+    public async Task GetAccountLogTopUsage()
+    {
+        ListAccountLogTopUsage = await AccountLogTopUsageService.GetAsyncAccountLogTopUsageId(AccountId, StartDate, EndDate, ISGS_AAAServiceId, ServiceType);
+        AccountsUsageDetail = ListAccountLogTopUsage.lstAccountsUsageDetai.OrderBy(C => C.stopTime).ToList();
+    }
+
+    protected override bool ShouldRender()
+    {
+        TotalDownloadMB = 0;
+        TotalUploadMB = 0;
+        TotalUsage = 0;
+        TotalComputed = 0;
+        Index = 1;
+
+        return base.ShouldRender();
+    }
+}

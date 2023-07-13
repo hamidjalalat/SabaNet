@@ -1,0 +1,91 @@
+﻿@page "/CustomerPackage"
+
+<link href="/css/customerpackage.css" rel="stylesheet" />
+
+<div class="container">
+    <div  class="row">
+        <div  class="col-md-12 col-1">
+            <span  @onclick="()=>ApplayGroupBuy(1)"  class="btn @ClassInternetService service">سرویس اینترنت</span>
+            <span @onclick="()=>ApplayGroupBuy(2)"  class="btn @ClassSharge service">حجم</span>
+            <span @onclick="()=>ApplayGroupBuy(3)"  class="btn @ClassIPStatic  service">IP Static</span>
+        </div>
+    </div>
+
+    @switch (CodeGroupBuy)
+    {
+        case 1:
+            <div class="row" >
+                <div >
+                    <div  class="or-lines"><hr ><span  class="header5"> سرویس اینترنت</span><hr ></div>
+                    <InternetService></InternetService>
+                </div>
+            </div>
+            break;
+        case 2:
+            <div class="row">
+                <div >
+                    <div  class="or-lines"><hr ><span  class="header5"> حجم</span><hr ></div>
+                <ChargeInternet></ChargeInternet>
+            </div>
+            </div>
+            break;
+        case 3:
+            <div class="row" >
+                <div >
+                    <div  class="or-lines"><hr><span  class="header5"> IP Static</span><hr ></div>
+                <IPStatic></IPStatic>
+                </div>
+            </div>
+            break;
+    }
+</div>
+
+@code {
+    public int CodeGroupBuy { get; set; }
+
+    public string ClassInternetService { get; set; }
+
+    public string ClassSharge { get; set; }
+
+    public string ClassIPStatic { get; set; }
+
+    public void ApplayGroupBuy(int codeGroupBuy)
+    {
+        CodeGroupBuy = codeGroupBuy;
+
+        switch (codeGroupBuy)
+        {
+            case 1:
+                {
+                    ClassInternetService = "btn-info setcolor";
+                    ClassSharge = "";
+                    ClassIPStatic = "";
+                }
+                break;
+            case 2:
+                {
+                    ClassInternetService = "";
+                    ClassSharge = "btn-info setcolor";
+                    ClassIPStatic = "";
+                }
+                break;
+            case 3:
+                {
+                    ClassInternetService = "";
+                    ClassSharge = "";
+                    ClassIPStatic = "btn-info setcolor";
+                }
+                break;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        CodeGroupBuy = 1;
+        ClassInternetService = "btn-info";
+        ClassSharge = "btn-outline-info";
+        ClassIPStatic = "btn-outline-info";
+    }
+}
+
+

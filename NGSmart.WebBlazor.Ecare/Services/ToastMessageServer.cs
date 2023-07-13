@@ -1,6 +1,6 @@
 ﻿using BlazorBootstrap;
 
-namespace NGSmart.WebBlazor.Ecare.Services
+namespace Services
 {
     public class ToastMessageServer
     {

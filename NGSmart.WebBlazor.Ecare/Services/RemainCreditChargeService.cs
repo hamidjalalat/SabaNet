@@ -3,7 +3,7 @@ using NGSmart.WebBlazor.Ecare.Models;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace NGSmart.WebBlazor.Ecare.Services
+namespace Services
 {
     public class RemainCreditChargeService: BaseService
     {

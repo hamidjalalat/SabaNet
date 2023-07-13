@@ -1,6 +1,9 @@
 ﻿@page "/ReservedCreditCharge"
 @using NGSmart.WebBlazor.Ecare.Models;
 @inject Services.ReservedCreditChargeService ReservedCreditChargeService
+@inject UserInfoSingleton UserInfo
+@inject AccountHolder AccountHolder
+
 
 <div class="row">
     <div style="font-size:11px" class="table-responsive">
@@ -35,9 +38,18 @@
 @code{
     public int Index;
     public List<ReservedCreditChargeResponse> _reservedCreditChargeResponse = new List<ReservedCreditChargeResponse>();
+    public string AccountId = "";
+
     protected override async Task OnInitializedAsync()
     {
-        _reservedCreditChargeResponse = await ReservedCreditChargeService.GetAsyncByAccountId("328684");
+        AccountId = UserInfo.AccountId;
+
+        if (AccountId == null)
+        {
+            AccountId = await AccountHolder.GetValueAsync<string>("accAccountID");
+        }
+
+        _reservedCreditChargeResponse = await ReservedCreditChargeService.GetAsyncByAccountId(AccountId);
         _reservedCreditChargeResponse = _reservedCreditChargeResponse.OrderByDescending(c => c.StartDateTime).ToList();
         Index = 1;
     }

@@ -1,9 +1,11 @@
 ﻿@page "/UsageDetail"
 @using BlazorBootstrap;
 @using NGSmart.WebBlazor.Ecare.Models;
-@using NGSmart.WebBlazor.Ecare.Services;
-@inject Services.BusinessDomainPropertyService BusinessDomainPropertyService
-@inject Services.AccountLogTopUsageService AccountLogTopUsageService
+
+@inject BusinessDomainPropertyService BusinessDomainPropertyService
+@inject AccountLogTopUsageService AccountLogTopUsageService
+@inject AccountHolder AccountHolder
+@inject UserInfoSingleton UserInfo
 
 <PageTitle>ریز مصرف</PageTitle>
 
@@ -114,7 +116,7 @@ else
     List<ToastMessage> Messages = new List<ToastMessage>();
 
     public string BusinessDomainID = "27";
-    public string AccountId = "363271";
+    public string AccountId = "";
     public string StartDate = DateTime.Now.Date.AddDays(-7).ToString();
     public string EndDate = DateTime.Now.ToString();
     public string ISGS_AAAServiceId = "0";
@@ -128,6 +130,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        AccountId = UserInfo.AccountId;
+
+        if (AccountId == null)
+        {
+            AccountId = await AccountHolder.GetValueAsync<string>("accAccountID");
+        }
+
         try
         {
             ListBusinessDomainProperty = await BusinessDomainPropertyService.GetAsyncByBusinessDomainID(BusinessDomainID);
@@ -136,6 +145,7 @@ else
 
             Index = 1;
         }
+
         catch (Exception)
         {
             ToastMessageServer Message = new ToastMessageServer(Messages);

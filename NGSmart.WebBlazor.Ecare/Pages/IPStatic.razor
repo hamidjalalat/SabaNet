@@ -1,0 +1,302 @@
+﻿@using BlazorBootstrap
+@using NGSmart.WebBlazor.Ecare.Models;
+
+@inject IPStaticPackageService Service;
+@inject NavigationManager navigationManager
+
+
+<div class="row">
+    <div  class="col-12 col-md-3">
+        <div  class="accordion" id="accordionPanelsStayOpenExample">
+        
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                        مدت سرویس
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse " aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedDuration(e,1)" class="form-check-input" type="checkbox" value="1" id="Duration1">
+                            <label class="form-check-label" for="Duration1">
+                                1 ماه
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedDuration(e,3)" class="form-check-input" type="checkbox" value="3" id="Duration3">
+                            <label class="form-check-label" for="Duration3">
+                                3 ماه
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedDuration(e,6)" class="form-check-input" type="checkbox" value="6" id="Duration6">
+                            <label class="form-check-label" for="Duration6">
+                                6 ماه
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedDuration(e,12)" class="form-check-input" type="checkbox" value="12" id="Duration12">
+                            <label class="form-check-label" for="Duration12">
+                                12 ماه
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                        برچسب ها  &nbsp;&nbsp;&nbsp;
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse " aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,13)" class="form-check-input" type="checkbox" value="2" id="Label13">
+                            <label class="form-check-label" for="Label13">
+                                عادی
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,27)" class="form-check-input" type="checkbox" value="3" id="Label27">
+                            <label class="form-check-label" for="Label27">
+                                تلفن ویژه
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,30)" class="form-check-input" type="checkbox" value="4" id="Label30">
+                            <label class="form-check-label" for="Label30">
+                                برنز کم حجم
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,31)" class="form-check-input" type="checkbox" value="8" id="Label31">
+                            <label class="form-check-label" for="Label31">
+                                برنز پر حجم
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,33)" class="form-check-input" type="checkbox" value="16" id="Label33">
+                            <label class="form-check-label" for="Label33">
+                                جشنواره
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,34)" class="form-check-input" type="checkbox" value="16" id="Label34">
+                            <label class="form-check-label" for="Label34">
+                                نقره آبی
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,36)" class="form-check-input" type="checkbox" value="16" id="Label36">
+                            <label class="form-check-label" for="Label36">
+                                برنز
+                            </label>
+                        </div>
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,37)" class="form-check-input" type="checkbox" value="16" id="Label37">
+                            <label class="form-check-label" for="Label37">
+                                زرین
+                            </label>
+                        </div>
+
+                        <div class="checkservice">
+                            <input @oninput="(e)=> CheckboxChangedLabel(e,38)" class="form-check-input" type="checkbox" value="16" id="Label38">
+                            <label class="form-check-label" for="Label38">
+                                نقرآبی کم حجم
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-12 col-md-9">
+        <div class="row">
+            @foreach (var item in PackageCardList)
+            {
+                <div class="col-sm-6 col-lg-3">
+                    <div class="show-case">
+                        @*<div class="row">
+                            <div class="photo-wrapper card-header col-9">
+                                کد بسته:@item.PackageId
+                            </div>
+                            <div class="col-3 photo-wrapper card-header">
+                                <span class="oi oi-wifi" style="font-size:15px"> </span>
+                            </div>
+                        </div>*@
+
+                        <div class="specification">
+                            <h1 class="name">@item.PackageDisplayItem1</h1>
+                            @if (item.Type!=7)
+                            {
+                                <p>پیکر بندی رایگان</p>
+                            }
+                            else
+                            {
+                                <p>هشت کاربره</p>
+                            }
+
+                            <h1 class="name">
+                                @item.Price.ToString("#,##0" )
+                                ریال
+                            </h1>
+                        </div>
+
+                        @*    لایه دوم*@
+                        @*  <div class="layer">*@
+                        <div class="about">
+                            @switch (item.Label)
+                            {
+                                case 13:
+                                    <span class="lable">
+                                        عادی
+                                    </span>
+                                    break;
+
+                                case 27:
+                                    <span class="lable">
+                                        تلفن ویژه
+                                    </span>
+                                    break;
+                                case 30:
+                                    <span class="lable">
+                                        برنز کم حجم
+                                    </span>
+                                    break;
+                                case 31:
+                                    <span class="lable">
+                                        برنز پر حجم
+                                    </span>
+                                    break;
+                                case 33:
+                                    <span class="lable">
+                                        جشنواره
+                                    </span>
+                                    break;
+                                case 34:
+                                    <span class="lable">
+                                        نقره آبی
+                                    </span>
+                                    break;
+                                case 36:
+                                    <span class="lable">
+                                        برنز
+                                    </span>
+                                    break;
+                                case 38:
+                                    <span class="lable">
+                                        نقرآبی کم حجم
+                                    </span>
+                                    break;
+
+                                default:
+                                    <span class="lable">
+                                        معمولی
+                                    </span>
+                                    break;
+                            }
+                        </div>
+                        @*</div>*@
+                        <div class="d-grid gap-2">
+                            <button @onclick="()=>GoToSelectPackageCustomerPage(item.PackageId)" class=" btn btn-primary btn-sm "> خرید</button>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public System.Collections.Generic.IList<PackageCard> PackageCardList;
+    public System.Collections.Generic.IList<PackageCard> StackPackageCardList;
+    System.Linq.IQueryable<PackageCard> QueryablePackageCard;
+
+    private List<int> _durationNumbers = new List<int>();
+    private List<int> _lableNumbers = new List<int>();
+
+    public string AccountId = "328684";
+    private int Index = 1;
+
+
+ 
+
+    private void CheckboxChangedDuration(ChangeEventArgs e, int num)
+    {
+        bool Checked = (bool)e.Value;
+
+        if (Checked)
+        {
+            _durationNumbers.Add(num);
+        }
+
+        else
+        {
+            _durationNumbers.Remove(num);
+        }
+
+    }
+
+    private void CheckboxChangedLabel(ChangeEventArgs e, int num)
+    {
+        bool Checked = (bool)e.Value;
+
+        if (Checked)
+        {
+            _lableNumbers.Add(num);
+        }
+
+        else
+        {
+            _lableNumbers.Remove(num);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            PackageCardList = await Service.GetAsyncByAccountId(AccountId);
+            StackPackageCardList = PackageCardList;
+            QueryablePackageCard =
+            PackageCardList.AsQueryable();
+        }
+
+        catch (Exception)
+        {
+
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        PackageCardList = StackPackageCardList;
+
+      
+
+        if (_durationNumbers.Count != 0)
+        {
+            PackageCardList = PackageCardList.Where(C => _durationNumbers.Contains(C.Duration)).ToList();
+        }
+
+        if (_lableNumbers.Count != 0)
+        {
+            PackageCardList = PackageCardList.Where(C => _lableNumbers.Contains(C.Label)).ToList();
+        }
+
+        return base.ShouldRender();
+    }
+    private void GoToSelectPackageCustomerPage(long id)
+    {
+        navigationManager.NavigateTo(uri: $"/SelectPackageCustomer/{id}", forceLoad: false);
+    }
+}
+
+
+

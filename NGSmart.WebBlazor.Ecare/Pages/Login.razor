@@ -1,0 +1,70 @@
+﻿@page "/"
+
+@layout LayoutLogin
+
+@inject UserInfoSingleton UserInfo
+@inject NavigationManager navigationManager
+@inject AccountHolder AccountHolder
+
+<link href="/css/login.css" rel="stylesheet" />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="form-horizontal">
+
+    <div class="row">
+        <div class="col-sm-3 col-md-3 col-lg-4">
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+            <br />
+            <div class="form-group row">
+                <label class="control-label col-6">نام کاربری</label>
+                <div class="col-sm-10">
+                    <input name="username" id="username" class="form-control " />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="control-label col-6">گذرواژه</label>
+                <div class="col-sm-10">
+                    <input name="password" id="password" class="form-control " type="password" /><span style="color:red"></span>
+                </div>
+            </div>
+            <br />
+        
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <div class="d-grid gap-2">
+                        <input @onclick="()=>GoToCustomerPackagePage()" type="button" value="ورود" class="btn btn-block btn-primary  " />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+</div>
+
+@code {
+    private async Task GoToCustomerPackagePage()
+    {
+        UserInfo.PartyRoleId = "75303";
+        UserInfo.AccountId = "501091";
+        UserInfo.AccountName = "Fibr_501091";
+        UserInfo.PartyID = "85834";
+        UserInfo.AccountTypeID = 0;
+
+        await AccountHolder.SetValueAsync("accPartyRoleID", UserInfo.PartyRoleId);
+        await AccountHolder.SetValueAsync("accAccountID", UserInfo.AccountId);
+        await AccountHolder.SetValueAsync("accAccountName", UserInfo.AccountName);
+        await AccountHolder.SetValueAsync("accPartyID", UserInfo.PartyID);
+        await AccountHolder.SetValueAsync("accAccountTypeID", UserInfo.AccountTypeID);
+
+        navigationManager.NavigateTo(uri: "/index", forceLoad: false);
+    }
+}

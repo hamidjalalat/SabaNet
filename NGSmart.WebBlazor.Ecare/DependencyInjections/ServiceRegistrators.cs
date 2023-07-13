@@ -7,7 +7,7 @@
             services.AddScoped<Services.PostService>();
             services.AddScoped<Services.BusinessInteractionService>();
             services.AddScoped<Services.ChargeService>();
-            services.AddScoped<Services.CommunicationListService>();
+            services.AddScoped<Services.CommunicationService>();
             services.AddScoped<Services.PreFactorInfoService>();
             services.AddScoped<Services.CreditService>();
             services.AddScoped<Services.RemainCreditChargeService>();

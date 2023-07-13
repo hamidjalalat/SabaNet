@@ -1,0 +1,105 @@
+﻿@page "/UserInformation"
+@using BlazorBootstrap;
+@using NGSmart.WebBlazor.Ecare.Models;
+@using NGSmart.WebBlazor.Ecare.Services;
+
+
+@inject Services.UserInformationService Service
+
+@if (TempUserInformation == null)
+{
+    <TableSkeleton></TableSkeleton>
+}
+else
+{
+    <h2>اطلاعات اشتراک</h2>
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered table-condensed table-striped table-hover">
+            <tbody>
+                <tr>
+                    <th class="tableborder">شماره ADSL</th>
+                    <td class="tabletd">@TempUserInformation.ADSLNumber</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">شماره تلفن</th>
+                    <td class="tabletd">@TempUserInformation.PhoneNumber</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">شناسه منبع</th>
+                    <td class="tabletd">-</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">شماره همراه ارتباطات</th>
+                    <td class="tabletd">@TempUserInformation.MoblieNumber</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">پست الکترونیکی ارتباطات</th>
+                    <td class="tabletd">@TempUserInformation.Email</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">آدرس صاحب اشتراك</th>
+                    <td class="tabletd">@TempUserInformation.Address</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">کد پستی صاحب اشتراك</th>
+                    <td class="tabletd">@TempUserInformation.PostalCode</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">مرکز</th>
+                    <td class="tabletd">@TempUserInformation.Center</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">نام مالک</th>
+                    <td class="tabletd">@TempUserInformation.Name</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">نام خانوادگی مالک</th>
+                    <td class="tabletd">@TempUserInformation.Family</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">کد ملی مالک</th>
+                    <td class="tabletd">@TempUserInformation.IdentificationNumber</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">روش جذب</th>
+                    <td class="tabletd">-</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">نوع قرارداد</th>
+                    <td class="tabletd">-</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">نتیجه درخواست شاهکار</th>
+                    <td class="tabletd">@TempUserInformation.ResultShahkar</td>
+                </tr>
+                <tr>
+                    <th class="tableborder">تاریخ بستن شاهکار</th>
+                    <td class="tabletd">@TempUserInformation.DateCloseShahkar</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+    <Toasts class="p-3" Messages="Messages" Placement="ToastsPlacement.BottomLeft" />
+@code
+{
+    public UserInformationByPartyRoleIdResponse TempUserInformation;
+    private int Index = 1;
+    public string PartyRoleId = "337682";
+    List<ToastMessage> Messages = new List<ToastMessage>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            TempUserInformation = await Service.GetAsyncByPartyRoleId(PartyRoleId);
+        }
+        catch (Exception)
+        {
+            ToastMessageServer Message = new ToastMessageServer(Messages);
+            Message.ShowMessage(ToastType.Danger);
+        }
+    }
+}
